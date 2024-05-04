@@ -63,7 +63,7 @@ int main() {
     string output = "";
     
     // fix the number of threads to 1 for small records scenario; parallel bitmap construction is TBD. 
-    int thread_num = 16;  
+    int thread_num = 8;  
 
     /* set the number of levels of bitmaps to create, either based on the
      * query or the JSON records. E.g., query $[*].user.id needs three levels
@@ -77,8 +77,7 @@ int main() {
     int num_recs = record_set->size();
     cout<<"num of recs:"<<num_recs<<endl;
     for (int i = 0; i < num_recs;i+=thread_num) {
-        vector<thread> threads((i+thread_num<num_recs)?thread_num:(num_recs-i-1));
-        
+        vector<thread> threads((i+thread_num<num_recs)?thread_num:(num_recs-i));
         for(int j=0;j<threads.size();j++){
             threads[j] = thread(solve,(*record_set)[i+j], 1, level_num);
         }

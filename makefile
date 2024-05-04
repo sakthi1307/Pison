@@ -3,7 +3,9 @@ EXEC1 = $(DIR)/example1
 EXEC2 = $(DIR)/example2
 EXEC3 = $(DIR)/example3
 EXEC4 = $(DIR)/example4
-TARGET = $(EXEC1) ${EXEC2} ${EXEC3} ${EXEC4}
+EXEC5 = $(DIR)/example5
+TARGET = $(EXEC1) ${EXEC2} ${EXEC3} ${EXEC4} ${EXEC5}
+
 all: $(TARGET)
 
 CC = g++
@@ -29,6 +31,11 @@ SOURCE4 = src/*.cpp example/example4.cpp
 $(EXEC4): $(SOURCE4)
 	mkdir -p $(DIR)
 	$(CC) $(CC_FLAGS) -o $(EXEC4) $(SOURCE4) $(POST_FLAGS)
+
+SOURCE5 = src/*.cpp example/example5.cpp
+$(EXEC5): $(SOURCE5)
+	mkdir -p $(DIR)
+	$(CC) $(CC_FLAGS) -o $(EXEC5) $(SOURCE5) $(POST_FLAGS)
 
 clean:
 	-$(RM) $(TARGET)
