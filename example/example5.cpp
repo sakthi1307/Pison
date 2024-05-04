@@ -47,6 +47,7 @@ struct arg_struct{
 
 void* solve(void *arguments){
     Bitmap* bm = NULL; 
+    // Cast the void pointer arguments to a struct arg_struct pointer.
     struct arg_struct *args = (struct arg_struct *)arguments;
     bm = BitmapConstructor::construct(args->record, args->thread_num, args->level_num);
     BitmapIterator* iter = BitmapConstructor::getIterator(bm);
@@ -60,7 +61,7 @@ void* solve(void *arguments){
 
 
 int main() {
-    char* file_path = "../dataset/twitter_small_records.json";
+    char* file_path = "../dataset/twitter_sample_small_records.json";
     RecordSet* record_set = RecordLoader::loadRecords(file_path);
     if (record_set->size() == 0) {
         cout<<"record loading fails."<<endl;
@@ -91,6 +92,7 @@ int main() {
             args[j].record = (*record_set)[i+j];
             //1 thread per record 
             args[j].thread_num = 1; 
+            //start the thread with record# i+j 
             pthread_create(&threads[j],NULL,solve,(void *)&args[j]);
         }
         for(int j=0;j<threads.size();j++){

@@ -54,7 +54,7 @@ void solve(Record* record, int thread_num, int level_num){
 
 
 int main() {
-    char* file_path = "../dataset/twitter_small_records.json";
+    char* file_path = "../dataset/twitter_sample_small_records.json";
     RecordSet* record_set = RecordLoader::loadRecords(file_path);
     if (record_set->size() == 0) {
         cout<<"record loading fails."<<endl;
@@ -79,6 +79,7 @@ int main() {
     for (int i = 0; i < num_recs;i+=thread_num) {
         vector<thread> threads((i+thread_num<num_recs)?thread_num:(num_recs-i));
         for(int j=0;j<threads.size();j++){
+            //start the thread with record# i+j 
             threads[j] = thread(solve,(*record_set)[i+j], 1, level_num);
         }
         for(int j=0;j<threads.size();j++){
