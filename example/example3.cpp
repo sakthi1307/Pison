@@ -64,8 +64,8 @@ int main() {
     }
     delete bm;
     delete record_set;
-    
     auto stop = high_resolution_clock::now();
+    
     auto duration = duration_cast<microseconds>(stop - start);
     cout<<"matches are: "<<output.size()<<endl;
   cout << "Time taken by function: "

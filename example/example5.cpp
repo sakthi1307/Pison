@@ -11,35 +11,30 @@ using namespace std;
 
 string op = "";
 
-string query(BitmapIterator *iter)
-{
+string query(BitmapIterator* iter) {
     string output = "";
-    if (iter->isObject() && iter->moveToKey("categoryPath"))
-    {
-        if (iter->down() == false)
-            return output; /* value of "categoryPath" */
-        if (iter->isArray())
-        {
-            for (int idx = 1; idx <= 2; ++idx)
-            {
-                // 2nd and 3rd elements inside "categoryPath" array
-                if (iter->moveToIndex(idx))
-                {
-                    if (iter->down() == false)
-                        continue;
-                    if (iter->isObject() && iter->moveToKey("id"))
-                    {
-                        // value of "id"
-                        char *value = iter->getValue();
-                        output.append(value).append(";");
-                        if (value)
-                            free(value);
-                    }
-                    iter->up();
+    if (iter->isObject()) {
+        unordered_set<char*> set;
+        set.insert("user");
+        set.insert("retweet_count");
+        char* key = NULL;
+        while ((key = iter->moveToKey(set)) != NULL) {
+            if (strcmp(key, "retweet_count") == 0) {
+                // value of "retweet_count"
+                char* value = iter->getValue();
+                output.append(value).append(";");
+                if (value) free(value);
+            } else {
+                if (iter->down() == false) continue;  /* value of "user" */
+                if (iter->isObject() && iter->moveToKey("id")) {
+                    // value of "id"
+                    char* value = iter->getValue();
+                    output.append(value).append(";");
+                    if (value) free(value);
                 }
+                iter->up();
             }
         }
-        iter->up();
     }
     return output;
 }
@@ -69,7 +64,7 @@ void *solve(void *arguments)
 
 int main()
 {
-    char *file_path = "../dataset/bestbuy_small_records.json";
+    char* file_path = "../dataset/twitter_small_records.json";
     RecordSet *record_set = RecordLoader::loadRecords(file_path);
     if (record_set->size() == 0)
     {
@@ -79,13 +74,13 @@ int main()
     string output = "";
 
     // fix the number of threads to 1 for small records scenario; parallel bitmap construction is TBD.
-    int thread_num = 16;
+    int thread_num = 4;
 
     /* set the number of levels of bitmaps to create, either based on the
      * query or the JSON records. E.g., query $[*].user.id needs three levels
      * (level 0, 1, 2), but the record may be of more than three levels
      */
-    int level_num = 3;
+    int level_num = 2;
     /* process the records one by one: for each one, first build bitmap, then perform
      * the query with a bitmap iterator
      */
